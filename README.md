@@ -55,7 +55,7 @@ This creates `input.txt` in the same directory as the source files.
 ## Run the Java benchmark
 
 ```powershell
-njavac JavaBenchmark.java
+javac JavaBenchmark.java
 java JavaBenchmark
 ```
 
@@ -64,8 +64,14 @@ java JavaBenchmark
 On Windows with MSVC:
 
 ```powershell
-cl.exe /EHsc /nologo cpp_benchmark.cpp /Fe:cpp_benchmark.exe
+cl.exe /O2 /EHsc /std:c++17 cpp_benchmark.cpp /Fe:cpp_benchmark.exe
 .\cpp_benchmark.exe
+```
+
+On Linux/macOS with GCC or Clang:
+
+```bash
+g++ -O3 -std=c++17 cpp_benchmark.cpp -o cpp_benchmark && ./cpp_benchmark
 ```
 
 ## Git hygiene
