@@ -8,8 +8,8 @@ The goal is to measure how quickly each approach reads and sums 10,000,000 integ
 
 This benchmark includes:
 
-- Java: `Scanner`, `BufferedReader + StringTokenizer`, and a custom 64KB byte-buffer parser
-- C++: default `std::cin` and `std::cin` with `ios::sync_with_stdio(false)`
+- **Java:** `Scanner`, `BufferedReader` + `StringTokenizer`, and a custom 64KB byte-buffer parser
+- **C++:** default `std::cin` and `std::cin` with `ios_base::sync_with_stdio(false)`
 - A shared generator for a fixed-size, deterministic input file: `input.txt`
 
 ## Project structure
@@ -26,22 +26,21 @@ io-benchmark/
 
 ## Benchmark design
 
-- Dataset size: `10_000_000` integers
-- Random seed: `Random(42)`
-- Output check: each benchmark computes a `long` or `long long` checksum and prints it
-- This ensures the compiler/JIT cannot remove the work as unused
+- **Dataset size:** `10_000_000` integers (~78 MB)
+- **Random seed:** `Random(42)`
+- **Output check:** each benchmark computes a `long` or `long long` checksum and prints it to ensure the compiler/JIT cannot remove the loop work as dead code
 
 ## Benchmark comparison
 
-Measured on the current machine using the same generated dataset and checksum validation.
+Measured on Windows (JDK 25 / MSVC `/O2`) using the same generated dataset and checksum validation.
 
 | Rank | Method | Language | Time (ms) | Speedup vs. Scanner | Checksum |
-|---|---|---|---:|---:|---:|
+|---:|---|---|---:|---:|---:|
 | 1 | Custom 64KB byte parser | Java | 104 | 26.86x | 5000868348918 |
-| 2 | `BufferedReader + StringTokenizer` | Java | 519 | 5.38x | 5000868348918 |
-| 3 | `std::cin` with `sync_with_stdio(false)` | C++ | 2680 | 1.04x | 5000868348918 |
-| 4 | `Scanner` | Java | 2793 | 1.00x | 5000868348918 |
-| 5 | Default `std::cin` | C++ | 2949 | 0.95x | 5000868348918 |
+| 2 | `BufferedReader` + `StringTokenizer` | Java | 519 | 5.38x | 5000868348918 |
+| 3 | `std::cin` with `sync_with_stdio(false)` | C++ | 2,680 | 1.04x | 5000868348918 |
+| 4 | `Scanner` | Java | 2,793 | 1.00x | 5000868348918 |
+| 5 | Default `std::cin` | C++ | 2,949 | 0.95x | 5000868348918 |
 
 ## Generate the input dataset
 
