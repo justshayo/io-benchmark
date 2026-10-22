@@ -1,8 +1,18 @@
 # Java vs. C++ I/O Benchmark
 
-This project compares a few common integer-input strategies in Java and C++ using the same generated dataset.
+A small benchmarking project that compares common integer-parsing strategies in Java and C++ using the same generated dataset.
 
-## Project layout
+The goal is to measure how quickly each approach reads and sums 10,000,000 integers while preventing dead-code elimination by printing a checksum after every run.
+
+## Overview
+
+This benchmark includes:
+
+- Java: `Scanner`, `BufferedReader + StringTokenizer`, and a custom 64KB byte-buffer parser
+- C++: default `std::cin` and `std::cin` with `ios::sync_with_stdio(false)`
+- A shared generator for a fixed-size, deterministic input file: `input.txt`
+
+## Project structure
 
 ```text
 io-benchmark/
@@ -14,50 +24,71 @@ io-benchmark/
 └── input.txt   # generated locally, ignored by Git
 ```
 
-## Benchmark goals
+## Benchmark design
 
-- Use the same 10,000,000 integer dataset for every benchmark
-- Keep the generated input deterministic with a fixed random seed
-- Check that the code does not get optimized away by summing every number into a checksum
+- Dataset size: `10_000_000` integers
+- Random seed: `Random(42)`
+- Output check: each benchmark computes a `long` or `long long` checksum and prints it
+- This ensures the compiler/JIT cannot remove the work as unused
 
-## Benchmark summary
+## Benchmark comparison
 
-| Rank | Method | Language | Checksum output |
-|---|---|---:|---|
-| 1 | Scanner | Java | `long sum` |
-| 2 | BufferedReader + StringTokenizer | Java | `long sum` |
-| 3 | Custom 64KB byte parser | Java | `long sum` |
-| 4 | Default `std::cin` | C++ | `long long sum` |
-| 5 | `std::cin` with `ios::sync_with_stdio(false)` | C++ | `long long sum` |
+| Rank | Method | Language | Checksum type |
+|---|---|---|---|
+| 1 | `Scanner` | Java | `long` |
+| 2 | `BufferedReader + StringTokenizer` | Java | `long` |
+| 3 | Custom 64KB byte parser | Java | `long` |
+| 4 | Default `std::cin` | C++ | `long long` |
+| 5 | `std::cin` with `sync_with_stdio(false)` | C++ | `long long` |
 
-## Generate the dataset
+## Generate the input dataset
+
+From the project root:
 
 ```powershell
-cd "C:\Users\USER\OneDrive\Desktop\Benchmark suite\io-benchmark"
 javac DataGen.java
 java DataGen
 ```
 
-This creates `input.txt` in the same folder as the source files.
+This creates `input.txt` in the same directory as the source files.
 
 ## Run the Java benchmark
 
 ```powershell
-cd "C:\Users\USER\OneDrive\Desktop\Benchmark suite\io-benchmark"
-javac JavaBenchmark.java
+njavac JavaBenchmark.java
 java JavaBenchmark
 ```
 
 ## Run the C++ benchmark
 
+On Windows with MSVC:
+
 ```powershell
-cd "C:\Users\USER\OneDrive\Desktop\Benchmark suite\io-benchmark"
 cl.exe /EHsc /nologo cpp_benchmark.cpp /Fe:cpp_benchmark.exe
 .\cpp_benchmark.exe
 ```
 
+## Git hygiene
+
+The project includes a [.gitignore](.gitignore) file that excludes:
+
+- `input.txt`
+- `*.class`
+- `*.exe`
+- `*.out`
+- `*.o`
+- `*.obj`
+- compiled benchmark binaries
+- editor folders such as `.idea/` and `.vscode/`
+
+This keeps large generated datasets and local build artifacts out of GitHub.
+
 ## Notes
 
-- The dataset is intentionally generated with `Random(42)`.
-- All benchmarks read `input.txt` from the current working directory so the relative path stays identical everywhere.
-- Large generated files and compiled binaries are blocked in `.gitignore`, including object files such as `*.obj`.
+- The random generator uses a fixed seed so the benchmark is deterministic.
+- All programs read `input.txt` from the same working directory to keep the data path consistent.
+- This project is designed for local benchmarking and educational comparison, not as a production-grade parser library.
+
+## License
+
+This project is provided for educational and benchmarking purposes.
