@@ -1,0 +1,10 @@
+input.txt
+*.class
+*.exe
+*.out
+*.o
+*.obj
+cpp_bench
+out/
+.idea/
+.vscode/
