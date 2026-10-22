@@ -33,13 +33,15 @@ io-benchmark/
 
 ## Benchmark comparison
 
-| Rank | Method | Language | Checksum type |
-|---|---|---|---|
-| 1 | `Scanner` | Java | `long` |
-| 2 | `BufferedReader + StringTokenizer` | Java | `long` |
-| 3 | Custom 64KB byte parser | Java | `long` |
-| 4 | Default `std::cin` | C++ | `long long` |
-| 5 | `std::cin` with `sync_with_stdio(false)` | C++ | `long long` |
+Measured on the current machine using the same generated dataset and checksum validation.
+
+| Rank | Method | Language | Time (ms) | Speedup vs. Scanner | Checksum |
+|---|---|---|---:|---:|---:|
+| 1 | Custom 64KB byte parser | Java | 104 | 26.86x | 5000868348918 |
+| 2 | `BufferedReader + StringTokenizer` | Java | 519 | 5.38x | 5000868348918 |
+| 3 | `std::cin` with `sync_with_stdio(false)` | C++ | 2680 | 1.04x | 5000868348918 |
+| 4 | `Scanner` | Java | 2793 | 1.00x | 5000868348918 |
+| 5 | Default `std::cin` | C++ | 2949 | 0.95x | 5000868348918 |
 
 ## Generate the input dataset
 
